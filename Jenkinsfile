@@ -1,4 +1,7 @@
 pipeline {
+  tools {
+    docker 'docker' 
+  }
   agent {
     docker {
       image "mesosphere/aws-cli"
