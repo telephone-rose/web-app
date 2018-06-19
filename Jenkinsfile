@@ -1,12 +1,5 @@
 pipeline {
-  tools {
-    "org.jenkinsci.plugins.docker.commons.tools.DockerTool" "docker"
-  }
-  agent {
-    docker {
-      image "mesosphere/aws-cli"
-    }
-  } 
+  agent any
 
   environment {
     AWS_ACCESS_KEY_ID         = credentials("jenkins-aws-secret-key-id")
