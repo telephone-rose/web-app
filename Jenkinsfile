@@ -1,7 +1,4 @@
 pipeline {
-  tools {
-    "org.jenkinsci.plugins.docker.commons.tools.DockerTool" "docker"
-  }
   agent {
     docker {
       image "mesosphere/aws-cli"
