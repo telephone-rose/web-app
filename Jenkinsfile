@@ -1,7 +1,7 @@
 pipeline {
   agent {
-    docker {
-      image "node"
+    dockerfile {
+      filename 'Dockerfile.build'
     }
   }
 
