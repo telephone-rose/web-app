@@ -8,7 +8,7 @@ pipeline {
   environment {
     AWS_ACCESS_KEY_ID         = credentials("jenkins-aws-secret-key-id")
     AWS_SECRET_ACCESS_KEY     = credentials("jenkins-aws-secret-access-key")
-    PRODUCTION_S3_BUCKETNAME  = "telephone-rose-web-app-production"
+    PRODUCTION_S3_BUCKETNAME  = "www.telephone-ro.se"
   }
 
   stages {
