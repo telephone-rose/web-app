@@ -1,8 +1,11 @@
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const webpack = require("webpack");
+const WebpackCdnPlugin = require("webpack-cdn-plugin");
 
 const outputDir = path.join(__dirname, "build/");
+
+const NODE_ENV = process.env.NODE_ENV || "production";
 
 module.exports = {
   entry: "./lib/es6/src/Index.bs.js",
@@ -18,6 +21,22 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin({
       template: "src/index.html"
+    }),
+    new WebpackCdnPlugin({
+      modules: {
+        react: [
+          {
+            name: "react",
+            var: "React",
+            path: `umd/react.${NODE_ENV}.min.js`
+          },
+          {
+            name: "react-dom",
+            var: "ReactDOM",
+            path: `umd/react-dom.${NODE_ENV}.min.js`
+          }
+        ]
+      }
     })
   ]
 };
