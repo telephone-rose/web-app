@@ -8,13 +8,13 @@ pipeline {
   environment {
     AWS_ACCESS_KEY_ID         = credentials("jenkins-aws-secret-key-id")
     AWS_SECRET_ACCESS_KEY     = credentials("jenkins-aws-secret-access-key")
-    PRODUCTION_S3_BUCKETNAME  = "www.telephone-ro.se"
+    PRODUCTION_S3_BUCKETNAME  = "app.telephone-ro.se"
   }
 
   stages {
     stage("Build") {
       steps {
-        sh "npm install"
+        sh "npm ci"
         sh "npm run build"
       }
     }
