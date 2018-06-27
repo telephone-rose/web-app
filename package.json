@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "scripts": {
     "clean": "bsb -clean-world && rimraf build && rimraf lib",
-    "precommit": "lint-staged",
+    "precommit": "npm run clean && npm run build && lint-staged",
     "build": "npm run build:bsb && npm run build:webpack",
     "build:bsb": "bsb -make-world",
     "build:webpack": "cross-env NODE_ENV=production webpack -p",
