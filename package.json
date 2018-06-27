@@ -3,33 +3,21 @@
   "version": "0.1.0",
   "scripts": {
     "clean": "bsb -clean-world && rimraf build && rimraf lib",
+    "precommit": "lint-staged",
     "build": "npm run build:bsb && npm run build:webpack",
     "build:bsb": "bsb -make-world",
     "build:webpack": "cross-env NODE_ENV=production webpack -p",
     "watch": "concurrently \"npm:watch:bsb\" \"npm:watch:webpack\"",
     "watch:bsb": "bsb -make-world -w",
-    "watch:webpack": "cross-env NODE_ENV=development webpack-dev-server --open --disable-host-check --history-api-fallback -d"
+    "watch:webpack":
+      "cross-env NODE_ENV=development webpack-dev-server --open --disable-host-check --history-api-fallback -d"
   },
-  "keywords": [
-    "BuckleScript"
-  ],
+  "keywords": ["BuckleScript"],
   "lint-staged": {
-    "*.json": [
-      "prettier --write --parser json",
-      "git add"
-    ],
-    "*.md": [
-      "prettier --write --parser markdown",
-      "git add"
-    ],
-    "*.{grapql,gql}": [
-      "prettier --write --parser graphql",
-      "git add"
-    ],
-    "*.re": [
-      "refmt --in-place",
-      "git add"
-    ]
+    "*.json": ["prettier --write --parser json", "git add"],
+    "*.md": ["prettier --write --parser markdown", "git add"],
+    "*.{grapql,gql}": ["prettier --write --parser graphql", "git add"],
+    "*.re": ["refmt --in-place", "git add"]
   },
   "author": "Telephone Rose <team@telephone-ro.se>",
   "private": true,
