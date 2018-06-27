@@ -3,18 +3,24 @@
   "version": "0.1.0",
   "scripts": {
     "clean": "bsb -clean-world && rimraf build && rimraf lib",
+    "precommit": "npm run clean && npm run build && lint-staged",
     "build": "npm run build:bsb && npm run build:webpack",
     "build:bsb": "bsb -make-world",
     "build:webpack": "cross-env NODE_ENV=production webpack -p",
     "watch": "concurrently \"npm:watch:bsb\" \"npm:watch:webpack\"",
     "watch:bsb": "bsb -make-world -w",
-    "watch:webpack": "cross-env NODE_ENV=development webpack-dev-server --open --disable-host-check --history-api-fallback -d"
+    "watch:webpack":
+      "cross-env NODE_ENV=development webpack-dev-server --open --disable-host-check --history-api-fallback -d"
   },
-  "keywords": [
-    "BuckleScript"
-  ],
-  "author": "",
-  "license": "MIT",
+  "keywords": ["BuckleScript"],
+  "lint-staged": {
+    "*.json": ["prettier --write --parser json", "git add"],
+    "*.md": ["prettier --write --parser markdown", "git add"],
+    "*.{grapql,gql}": ["prettier --write --parser graphql", "git add"],
+    "*.re": ["refmt --in-place", "git add"]
+  },
+  "author": "Telephone Rose <team@telephone-ro.se>",
+  "private": true,
   "dependencies": {
     "react": "^16.4.1",
     "react-dom": "^16.4.1",
@@ -25,9 +31,12 @@
     "concurrently": "^3.6.0",
     "cross-env": "^5.2.0",
     "html-webpack-plugin": "^3.2.0",
+    "husky": "^0.14.3",
+    "lint-staged": "^7.2.0",
+    "prettier": "^1.13.6",
     "rimraf": "^2.6.2",
-    "webpack": "^4.12.0",
-    "webpack-cdn-plugin": "^2.0.1",
+    "webpack": "^4.12.2",
+    "webpack-cdn-plugin": "^2.1.0",
     "webpack-cli": "^3.0.8",
     "webpack-dev-server": "^3.1.4"
   }
