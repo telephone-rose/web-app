@@ -11,16 +11,16 @@ module.exports = {
   entry: "./lib/es6/src/Index.bs.js",
   output: {
     path: outputDir,
-    filename: "[name].[chunkhash].js"
+    filename: "[name].[chunkhash].js",
   },
   optimization: {
     splitChunks: {
-      chunks: "all"
-    }
+      chunks: "all",
+    },
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: "src/index.html"
+      template: "src/index.html",
     }),
     new WebpackCdnPlugin({
       modules: {
@@ -28,15 +28,19 @@ module.exports = {
           {
             name: "react",
             var: "React",
-            path: `umd/react.${NODE_ENV}.min.js`
+            path: `umd/react.${
+              NODE_ENV === "production" ? "production.min" : "development"
+            }.js`,
           },
           {
             name: "react-dom",
             var: "ReactDOM",
-            path: `umd/react-dom.${NODE_ENV}.min.js`
-          }
-        ]
-      }
-    })
-  ]
+            path: `umd/react-dom.${
+              NODE_ENV === "production" ? "production.min" : "development"
+            }.js`,
+          },
+        ],
+      },
+    }),
+  ],
 };

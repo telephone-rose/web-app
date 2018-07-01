@@ -4,15 +4,18 @@
 <head>
   <meta charset="UTF-8">
   <title>ReasonReact Examples</title>
+  <script src="https://cdn.ravenjs.com/3.26.2/raven.min.js" crossorigin="anonymous"></script>
+
   <base href="/" />
 </head>
 
 <body>
-  Component 1:
-  <div id="index1"></div>
-  Component 2:
-  <div id="index2"></div>
 
+  <div id="root"></div>
+
+  <script>
+    Raven.config('https://e8ea6518347e4ac999aa45933785ee9e@sentry.telephone-ro.se/4').install()
+  </script>
 </body>
 
 </html>

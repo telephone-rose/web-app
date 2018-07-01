@@ -1,5 +1,5 @@
 /* This is the basic component. */
-let component = ReasonReact.statelessComponent("Page");
+let component = ReasonReact.statelessComponent("Router");
 
 /* Your familiar handleClick from ReactJS. This mandatorily takes the payload,
    then the `self` record, which contains state (none here), `handle`, `reduce`
@@ -14,10 +14,10 @@ let handleClick = (_event, _self) => Js.log("clicked!");
    Which desugars to
 
    `ReasonReact.element(Page.make(~message="hello", [||]))` */
-let make = (~message, _children) => {
+let make = _children => {
   ...component,
   render: self =>
     <div onClick=(self.handle(handleClick))>
-      (ReasonReact.string(message))
+      (ReasonReact.string("Hello"))
     </div>,
 };
