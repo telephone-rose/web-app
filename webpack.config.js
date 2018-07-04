@@ -8,7 +8,8 @@ const outputDir = path.join(__dirname, "build/");
 const NODE_ENV = process.env.NODE_ENV || "production";
 
 module.exports = {
-  entry: "./lib/es6/src/Index.bs.js",
+  devtool: NODE_ENV === "production" ? "source-map" : "eval",
+  entry: ["./lib/es6/src/Index.bs.js"],
   output: {
     path: outputDir,
     filename: "[name].[chunkhash].js",

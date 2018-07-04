@@ -1,23 +1,40 @@
-/* This is the basic component. */
-let component = ReasonReact.statelessComponent("Router");
+type page =
+  | Home
+  | NotFound;
 
-/* Your familiar handleClick from ReactJS. This mandatorily takes the payload,
-   then the `self` record, which contains state (none here), `handle`, `reduce`
-   and other utilities */
-let handleClick = (_event, _self) => Js.log("clicked!");
+type action =
+  | ShowHome
+  | ShowNotFound;
 
-/* `make` is the function that mandatorily takes `children` (if you want to use
-   `JSX). `message` is a named argument, which simulates ReactJS props. Usage:
+type state = {page};
 
-   `<Page message="hello" />`
+let component = ReasonReact.reducerComponent("Router");
 
-   Which desugars to
+let route = (url: ReasonReact.Router.url) =>
+  switch (url.path) {
+  | [] => ShowHome
+  | _ => ShowNotFound
+  };
 
-   `ReasonReact.element(Page.make(~message="hello", [||]))` */
-let make = _children => {
+let make = (~isAuthenticated, ~onLogin, _children) => {
   ...component,
+  initialState: () => {page: Home},
+  reducer: (action, _) =>
+    switch (action) {
+    | ShowHome => ReasonReact.Update({page: Home})
+    | ShowNotFound => ReasonReact.Update({page: NotFound})
+    },
+  didMount: self => {
+    self.send(route(ReasonReact.Router.dangerouslyGetInitialUrl()));
+    let watcherID =
+      ReasonReact.Router.watchUrl(url => self.send(route(url)));
+    self.onUnmount(() => ReasonReact.Router.unwatchUrl(watcherID));
+    ();
+  },
   render: self =>
-    <div onClick=(self.handle(handleClick))>
-      (ReasonReact.string("Hello"))
-    </div>,
+    switch (isAuthenticated, self.state.page) {
+    | (_, NotFound) => <NotFoundPage />
+    | (false, _) => <LoginPage onLogin />
+    | (_, Home) => <HomePage />
+    },
 };
