@@ -7,7 +7,7 @@ let httpLink =
 let makeAuthLink = authToken => {
   let contextHandler = () => {
     "headers": {
-      "authorization": authToken,
+      "authorization": "Bearer " ++ authToken,
     },
   };
   ApolloLinks.createContextLink(contextHandler);

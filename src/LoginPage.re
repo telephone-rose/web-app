@@ -5,12 +5,14 @@ let make = (~onLogin, _children) => {
   render: _ =>
     <section className="section">
       <div className="container">
-        <h1 className="title"> (ReasonReact.string("Hello !")) </h1>
-        <span> (ReasonReact.string("-")) </span>
-        <br />
-        <br />
+        <h1 className="title">
+          (ReasonReact.string({js|Hello hello 👋|js}))
+        </h1>
+        <h2 className="subtitle">
+          (ReasonReact.string({js|On se connaît ?|js}))
+        </h2>
         <span className="subtitle">
-          (ReasonReact.string({js|Plutôt|js}))
+          (ReasonReact.string({js|T'es plutôt du genre|js}))
         </span>
         <br />
         <FacebookLoginButton onLogin />
