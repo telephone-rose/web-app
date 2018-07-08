@@ -1,83 +1,99 @@
+type recordingState =
+  | Recording
+  | Stoped
+  | Loading;
+
 type state = {
-  isRecording: bool,
-  record: option(Navigator.objectUrl),
-  recorder: option((unit => unit, unit => unit, unit => unit)),
+  recorder: option(OpusRecorder.t),
+  recordingState,
 };
 
 type action =
-  | Record
-  | StopRecording
-  | RecorderAvailable((unit => unit, unit => unit, unit => unit))
-  | RecordAvailable(Navigator.objectUrl);
+  | RecorderCreated(OpusRecorder.t)
+  | StartRecording
+  | RecordingStarted
+  | RecordingStoped
+  | StopRecording;
 
-let component = ReasonReact.reducerComponent("MessageRecorder");
+let component = ReasonReact.reducerComponent("AudioRecorder");
 
-let make = _children => {
+let make = (_children, ~onRecordReady) => {
   ...component,
-  initialState: () => {isRecording: false, recorder: None, record: None},
+  initialState: () => {recorder: None, recordingState: Loading},
   reducer: (action, state) =>
     switch (action) {
+    | RecordingStarted =>
+      ReasonReact.Update({...state, recordingState: Recording})
+    | RecordingStoped =>
+      ReasonReact.Update({...state, recordingState: Stoped})
+    | StartRecording =>
+      ReasonReact.UpdateWithSideEffects(
+        {...state, recordingState: Loading},
+        (
+          self =>
+            switch (self.state.recorder) {
+            | None => ()
+            | Some(recorder) => recorder |> OpusRecorder.start
+            }
+        ),
+      )
     | StopRecording =>
       ReasonReact.UpdateWithSideEffects(
-        {...state, isRecording: false},
+        {...state, recordingState: Loading},
         (
           self =>
             switch (self.state.recorder) {
             | None => ()
-            | Some((_, stop, _)) => stop()
+            | Some(recorder) => recorder |> OpusRecorder.stop
             }
         ),
       )
-
-    | Record =>
-      ReasonReact.UpdateWithSideEffects(
-        {...state, isRecording: true},
-        (
-          self =>
-            switch (self.state.recorder) {
-            | None => ()
-            | Some((play, _, _)) => play()
-            }
-        ),
-      )
-    | RecordAvailable(record) =>
-      ReasonReact.Update({...state, record: Some(record)})
-    | RecorderAvailable(controls) =>
-      ReasonReact.Update({...state, recorder: Some(controls)})
+    | RecorderCreated(recorder) =>
+      ReasonReact.Update({recordingState: Stoped, recorder: Some(recorder)})
     },
   didMount: self =>
-    Navigator.recordAudio(
-      controls => self.send(RecorderAvailable(controls)),
-      record => self.send(RecordAvailable(record)),
-    ),
+    if (OpusRecorder.isRecordingSupported()) {
+      let recorder = OpusRecorder.make();
+      recorder |. OpusRecorder.onstart(() => self.send(RecordingStarted));
+      recorder |. OpusRecorder.onstop(() => self.send(RecordingStoped));
+      recorder |. OpusRecorder.ondataavailable(data => onRecordReady(data));
+      self.onUnmount(() => recorder |> OpusRecorder.clearStream);
+      self.send(RecorderCreated(recorder));
+    },
   render: self =>
-    <div className="field has-addons">
-      <p className="control">
+    switch (self.state.recorder) {
+    | None => <div> (ReasonReact.string("Not supported")) </div>
+    | Some(_) =>
+      switch (self.state.recordingState) {
+      | Loading =>
         <button
-          className="button"
-          onClick=(_ => self.send(Record))
-          disabled=(self.state.recorder === None ? true : false)>
-          (
-            self.state.isRecording ?
-              <span className="icon is-small has-text-danger">
-                <i className="fas fa-square" />
-              </span> :
-              <span className="icon is-small has-text-danger">
-                <i className="fas fa-circle" />
-              </span>
-          )
+          className="button is-loading is-fullwidth is-medium"
+          key="stop-recording">
+          <span className="icon is-small">
+            <i className="fas fa-microphone" />
+          </span>
           <span> (ReasonReact.string("Rec.")) </span>
         </button>
-      </p>
-      <p className="control">
+      | Stoped =>
         <button
-          className="button"
-          disabled=(self.state.record === None ? true : false)>
+          className="button is-fullwidth is-medium"
+          key="stop-recording"
+          onClick=(_ => self.send(StartRecording))>
           <span className="icon is-small">
-            <i className="fas fa-play" />
+            <i className="fas fa-microphone" />
           </span>
-          <span> (ReasonReact.string("Play")) </span>
+          <span> (ReasonReact.string("Rec.")) </span>
         </button>
-      </p>
-    </div>,
+      | Recording =>
+        <button
+          className="button is-fullwidth is-medium"
+          key="stop-recording"
+          onClick=(_ => self.send(StopRecording))>
+          <span className="icon is-small has-text-danger">
+            <i className="fas fa-microphone" />
+          </span>
+          <span> (ReasonReact.string("Rec.")) </span>
+        </button>
+      }
+    },
 };
