@@ -19,8 +19,8 @@ type position = {
 let getCurrentPosition = callback =>
   _getCurrentPosition(_position =>
     {
-      latitude: _position |> coords |> latitude,
-      longitude: _position |> coords |> longitude,
+      latitude: _position |> coordsGet |> latitudeGet,
+      longitude: _position |> coordsGet |> longitudeGet,
     }
     |> callback
   );

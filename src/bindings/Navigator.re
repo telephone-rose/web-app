@@ -74,7 +74,8 @@ let recordAudio = (controllsCallback, onStop) =>
            |. _addEventListener(
                 `dataavailable(
                   (rde: recordingDataEvent) => {
-                    audioChunks := List.append(audioChunks^, [data(rde)]);
+                    audioChunks :=
+                      List.append(audioChunks^, [rde |> dataGet]);
                     ();
                   },
                 ),
