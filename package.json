@@ -2,8 +2,7 @@
   "name": "web-app",
   "version": "0.1.0",
   "scripts": {
-    "update-graphql-schema":
-      "send-introspection-query https://api.telephone-ro.se/graphql",
+    "update-graphql-schema": "send-introspection-query https://api.telephone-ro.se/graphql",
     "clean": "bsb -clean-world && rimraf build && rimraf lib",
     "precommit": "npm run clean && npm run build && lint-staged",
     "build": "npm run build:bsb && npm run build:webpack",
@@ -11,26 +10,40 @@
     "build:webpack": "cross-env NODE_ENV=production webpack -p",
     "watch": "concurrently \"npm:watch:bsb\" \"npm:watch:webpack\"",
     "watch:bsb": "bsb -make-world -w",
-    "watch:webpack":
-      "cross-env NODE_ENV=development webpack-dev-server --open --disable-host-check --history-api-fallback -d"
+    "watch:webpack": "cross-env NODE_ENV=development webpack-dev-server --open --disable-host-check --history-api-fallback -d"
   },
-  "keywords": ["BuckleScript"],
+  "keywords": [
+    "BuckleScript"
+  ],
   "lint-staged": {
-    "*.json": ["prettier --write --parser json", "git add"],
-    "*.md": ["prettier --write --parser markdown", "git add"],
-    "*.{graphql,gql}": ["prettier --write --parser graphql", "git add"],
-    "*.re": ["refmt --in-place", "git add"]
+    "*.json": [
+      "prettier --write --parser json",
+      "git add"
+    ],
+    "*.md": [
+      "prettier --write --parser markdown",
+      "git add"
+    ],
+    "*.{graphql,gql}": [
+      "prettier --write --parser graphql",
+      "git add"
+    ],
+    "*.re": [
+      "refmt --in-place",
+      "git add"
+    ]
   },
   "author": "Telephone Rose <team@telephone-ro.se>",
   "private": true,
   "dependencies": {
     "@glennsl/bs-json": "^2.0.0",
-    "apollo-cache-inmemory": "^1.2.5",
-    "apollo-client": "^2.3.5",
+    "apollo-cache-inmemory": "^1.2.6",
+    "apollo-client": "^2.3.7",
     "apollo-link": "^1.2.2",
     "apollo-link-context": "^1.0.8",
     "apollo-link-error": "^1.1.0",
     "apollo-link-http": "^1.5.4",
+    "apollo-link-ws": "^1.0.8",
     "bs-fetch": "^0.3.0",
     "bs-glamor": "^0.2.0",
     "bulma": "^0.7.1",
@@ -38,26 +51,27 @@
     "graphql-tag": "^2.9.2",
     "opus-recorder": "^4.1.4",
     "react": "^16.4.1",
-    "react-apollo": "^2.1.8",
+    "react-apollo": "^2.1.9",
     "react-dom": "^16.4.1",
-    "reason-apollo": "^0.9.1",
-    "reason-react": "^0.4.2"
+    "reason-apollo": "^0.12.0",
+    "reason-react": "^0.4.2",
+    "subscriptions-transport-ws": "^0.9.13"
   },
   "devDependencies": {
-    "bs-platform": "^3.1.5",
-    "concurrently": "^3.6.0",
+    "bs-platform": "^4.0.1",
+    "concurrently": "^3.6.1",
     "copy-webpack-plugin": "^4.5.2",
     "cross-env": "^5.2.0",
     "file-loader": "^1.1.11",
-    "graphql_ppx": "^0.2.4",
+    "graphql_ppx": "^0.2.6",
     "html-webpack-plugin": "^3.2.0",
     "husky": "^0.14.3",
     "lint-staged": "^7.2.0",
-    "prettier": "^1.13.6",
+    "prettier": "^1.13.7",
     "rimraf": "^2.6.2",
-    "webpack": "^4.12.2",
-    "webpack-cdn-plugin": "^2.1.0",
-    "webpack-cli": "^3.0.8",
-    "webpack-dev-server": "^3.1.4"
+    "webpack": "^4.16.2",
+    "webpack-cdn-plugin": "^2.2.0",
+    "webpack-cli": "^3.1.0",
+    "webpack-dev-server": "^3.1.5"
   }
 }
