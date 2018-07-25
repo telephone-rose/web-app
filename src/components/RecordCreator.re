@@ -42,7 +42,7 @@ module CreateRecording = [%graphql
   {|
       mutation CreateRecording (
         $fileId: ID!
-        $languageCode: String!
+        $languageCode: language!
       ) {
         createRecording (
           fileId: $fileId,
@@ -119,7 +119,7 @@ let make = (~onRecordingCreation, ~onRecordingError, _children) => {
                                             CreateRecording.make(
                                               ~fileId=
                                                 requestFileUploadResult.id,
-                                              ~languageCode="fr-FR",
+                                              ~languageCode=`frFR,
                                               (),
                                             );
 
