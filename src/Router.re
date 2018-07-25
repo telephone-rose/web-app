@@ -4,6 +4,7 @@ type page =
 
 type action =
   | ShowHome
+  | RedirectToHome
   | ShowNotFound;
 
 type state = {page};
@@ -13,6 +14,7 @@ let component = ReasonReact.reducerComponent("Router");
 let route = (url: ReasonReact.Router.url) =>
   switch (url.path) {
   | [] => ShowHome
+  | ["/"] => RedirectToHome
   | _ => ShowNotFound
   };
 
@@ -23,6 +25,8 @@ let make = (~isAuthenticated, ~onLogin, _children) => {
     switch (action) {
     | ShowHome => ReasonReact.Update({page: Home})
     | ShowNotFound => ReasonReact.Update({page: NotFound})
+    | RedirectToHome =>
+      ReasonReact.SideEffects((_ => ReasonReact.Router.push("")))
     },
   didMount: self => {
     self.send(route(ReasonReact.Router.dangerouslyGetInitialUrl()));
