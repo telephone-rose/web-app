@@ -1,10 +1,12 @@
 type page =
   | Home
+  | Discover
   | NotFound;
 
 type action =
   | ShowHome
   | RedirectToHome
+  | ShowDiscover
   | ShowNotFound;
 
 type state = {page};
@@ -15,6 +17,7 @@ let route = (url: ReasonReact.Router.url) =>
   switch (url.path) {
   | [] => ShowHome
   | ["/"] => RedirectToHome
+  | ["discover"] => ShowDiscover
   | _ => ShowNotFound
   };
 
@@ -25,6 +28,7 @@ let make = (~isAuthenticated, ~onLogin, _children) => {
     switch (action) {
     | ShowHome => ReasonReact.Update({page: Home})
     | ShowNotFound => ReasonReact.Update({page: NotFound})
+    | ShowDiscover => ReasonReact.Update({page: Discover})
     | RedirectToHome =>
       ReasonReact.SideEffects((_ => ReasonReact.Router.push("")))
     },
@@ -40,5 +44,6 @@ let make = (~isAuthenticated, ~onLogin, _children) => {
     | (_, NotFound) => <NotFoundPage />
     | (false, _) => <LoginPage onLogin />
     | (_, Home) => <HomePage />
+    | (_, Discover) => <DiscoverPage />
     },
 };

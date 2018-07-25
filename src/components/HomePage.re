@@ -65,9 +65,10 @@ module HomeData = {
       | (_, _, false, None) =>
         <LocationUploadUnboarding onSkip=(_ => self.send(SkipLocation)) />
       | _ =>
+        ReasonReact.Router.push("/discover");
         <div>
           (ReasonReact.string("This is supposed to be the home page"))
-        </div>
+        </div>;
       };
     },
   };
