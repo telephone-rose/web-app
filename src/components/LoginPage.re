@@ -20,10 +20,7 @@ let make = (~onLogin, _children) => {
         <br />
         <span className="subtitle"> (ReasonReact.string("ou")) </span>
         <br />
-        <button className="button is-medium is-light">
-          <span className="icon"> <i className="fab fa-google" /> </span>
-          <span> (ReasonReact.string("Google")) </span>
-        </button>
+        <GoogleLoginButton onLogin />
       </div>
     </section>,
 };
