@@ -1,5 +1,3 @@
-let component = ReasonReact.statelessComponent("DiscoverCard");
-
 let makeTitle = (~emojiResume) =>
   switch (emojiResume) {
   | Some(emojiResume) when String.length(emojiResume) > 0 =>
@@ -27,6 +25,19 @@ let makeSubtitle = (~userFirstName, ~userCity, ~distance) =>
   | (None, None) => {j|- $(userFirstName)|j}
   };
 
+let component = ReasonReact.statelessComponent("DiscoverCard");
+
+let cardStyle =
+  Glamor.(
+    css([
+      marginTop("24px"),
+      marginBottom("24px"),
+      marginLeft("24px"),
+      marginRight("24px"),
+      borderRadius("12px"),
+    ])
+  );
+
 let make =
     (
       ~distance,
@@ -39,7 +50,7 @@ let make =
     ) => {
   ...component,
   render: _self =>
-    <div className="card">
+    <div className=("card " ++ cardStyle)>
       <div className="card-content">
         (
           switch (makeTitle(~emojiResume)) {

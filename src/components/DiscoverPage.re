@@ -90,7 +90,7 @@ let make = _children => {
                    let me = response##me;
                    me.randomUserFeed
                    |> Array.map(randomUser =>
-                        <div key=randomUser.id className=Theme.marginTop>
+                        <div key=randomUser.id>
                           <DiscoverCard
                             emojiResume=(
                               switch (randomUser.answeringMessageFile) {
