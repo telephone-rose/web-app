@@ -1,5 +1,10 @@
 type file = {id: string};
 
+type downloadableFile = {
+  id: string,
+  downloadUrl: string,
+};
+
 type location = {
   latitude: float,
   longitude: float,
@@ -8,11 +13,15 @@ type location = {
 type messageFile = {
   id: string,
   emojiResume: option(string),
+  compressedFile: downloadableFile,
 };
 
 type user = {
   id: string,
   firstName: string,
+  distance: option(int),
+  city: option(string),
+  country: option(string),
   answeringMessageFile: option(messageFile),
 };
 
@@ -38,15 +47,22 @@ module Payload = [%graphql
         randomUserFeed (
           distance: 999999999,
           pagination: {
-            limit: 3
+            limit: 10
             offset: 0
           }
         ) @bsRecord {
           id
           firstName
+          distance
+          country
+          city
           answeringMessageFile @bsRecord {
             id
             emojiResume(length: 3)
+            compressedFile @bsRecord {
+              id
+              downloadUrl
+            }
           }
         }
       }
@@ -74,29 +90,30 @@ let make = _children => {
                    let me = response##me;
                    me.randomUserFeed
                    |> Array.map(randomUser =>
-                        <div key=randomUser.id>
-                          <h1>
-                            (randomUser.firstName |> ReasonReact.string)
-                          </h1>
-                          (
-                            switch (randomUser.answeringMessageFile) {
-                            | None =>
-                              "Pas d'enregistrement" |> ReasonReact.string
-                            | Some(recording) =>
-                              <div>
-                                <h1>
-                                  (
-                                    switch (recording.emojiResume) {
-                                    | None =>
-                                      "Pas de resume" |> ReasonReact.string
-                                    | Some(emojiResume) =>
-                                      emojiResume |> ReasonReact.string
-                                    }
-                                  )
-                                </h1>
-                              </div>
-                            }
-                          )
+                        <div key=randomUser.id className=Theme.marginTop>
+                          <DiscoverCard
+                            emojiResume=(
+                              switch (randomUser.answeringMessageFile) {
+                              | None => None
+                              | Some(answeringMessageFile) =>
+                                answeringMessageFile.emojiResume
+                              }
+                            )
+                            recordingDownloadUrl=(
+                              switch (randomUser.answeringMessageFile) {
+                              | None => None
+                              | Some(answeringMessageFile) =>
+                                Some(
+                                  answeringMessageFile.compressedFile.
+                                    downloadUrl,
+                                )
+                              }
+                            )
+                            userCity=randomUser.city
+                            distance=randomUser.distance
+                            userId=randomUser.id
+                            userFirstName=randomUser.firstName
+                          />
                         </div>
                       )
                    |> ReasonReact.array;
