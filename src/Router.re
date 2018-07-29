@@ -43,7 +43,15 @@ let make = (~isAuthenticated, ~onLogin, _children) => {
     switch (isAuthenticated, self.state.page) {
     | (_, NotFound) => <NotFoundPage />
     | (false, _) => <LoginPage onLogin />
-    | (_, Home) => <HomePage />
-    | (_, Discover) => <DiscoverPage />
+    | _ =>
+      <NavigationLayout>
+        ...(
+             switch (self.state.page) {
+             | NotFound => <NotFoundPage />
+             | Home => <HomePage />
+             | Discover => <DiscoverPage />
+             }
+           )
+      </NavigationLayout>
     },
 };
