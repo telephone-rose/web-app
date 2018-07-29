@@ -12,7 +12,22 @@ let make = children => {
           <li className="is-active">
             <a> ("Discover" |> ReasonReact.string) </a>
           </li>
-          <li> <a> ("Messages" |> ReasonReact.string) </a> </li>
+          <li>
+            <a>
+              ("Messages" |> ReasonReact.string)
+              <span
+                style=(
+                  ReactDOMRe.Style.make(
+                    ~marginLeft="10px",
+                    ~fontSize="9px",
+                    (),
+                  )
+                )
+                className="tag is-danger is-rounded is-small">
+                ("10" |> ReasonReact.string)
+              </span>
+            </a>
+          </li>
           <li> <a> ({j|Paramètres|j} |> ReasonReact.string) </a> </li>
         </ul>
       </div>
