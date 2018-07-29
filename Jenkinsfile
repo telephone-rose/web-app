@@ -41,6 +41,7 @@ pipeline {
     }
     failure {
       echo 'I failed :('
+      slackSend color: 'bad', message: "The pipeline ${currentBuild.fullDisplayName} failed."
     }
     changed {
       echo 'Things were different before...'
