@@ -47,7 +47,7 @@ module Payload = [%graphql
         randomUserFeed (
           distance: 999999999,
           pagination: {
-            limit: 10
+            limit: 4
             offset: 0
           }
         ) @bsRecord {
@@ -58,7 +58,7 @@ module Payload = [%graphql
           city
           answeringMessageFile @bsRecord {
             id
-            emojiResume(length: 3)
+            emojiResume(length: 10)
             compressedFile @bsRecord {
               id
               downloadUrl
@@ -74,6 +74,18 @@ module Query = ReasonApollo.CreateQuery(Payload);
 
 let component = ReasonReact.statelessComponent("DiscoverPage");
 
+let pageStyle =
+  Glamor.(
+    css([
+      width("100%"),
+      height("100%"),
+      display("flex"),
+      justifyContent("center"),
+      alignItems("center"),
+    ])
+  );
+let cardWrapperStyle = Glamor.(css([position("absolute")]));
+
 let make = _children => {
   ...component,
   render: _self =>
@@ -85,12 +97,31 @@ let make = _children => {
              | Error(error) =>
                <div> (ReasonReact.string(error##message)) </div>
              | Data(response) =>
-               <div>
+               <div className=pageStyle>
                  {
                    let me = response##me;
                    me.randomUserFeed
-                   |> Array.map(randomUser =>
-                        <div key=randomUser.id>
+                   |> Array.mapi((i, randomUser) =>
+                        <div
+                          style=(
+                            ReactDOMRe.Style.make(
+                              ~zIndex=
+                                string_of_int(
+                                  (me.randomUserFeed |> Array.length) - i,
+                                ),
+                              ~transform=
+                                "scale("
+                                ++ string_of_float(
+                                     1.0 -. 0.1 *. float_of_int(i),
+                                   )
+                                ++ ") translateY("
+                                ++ string_of_int((-20) * i)
+                                ++ "px)",
+                              (),
+                            )
+                          )
+                          className=cardWrapperStyle
+                          key=randomUser.id>
                           <DiscoverCard
                             emojiResume=(
                               switch (randomUser.answeringMessageFile) {
