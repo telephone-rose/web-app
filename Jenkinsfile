@@ -27,4 +27,23 @@ pipeline {
       }
     }
   }
+  post {
+    always {
+      echo 'One way or another, I have finished'
+      deleteDir() /* clean up our workspace */
+    }
+    success {
+      echo 'I succeeeded!'
+      slackSend color: 'good', message: "The pipeline ${currentBuild.fullDisplayName} completed successfully."
+    }
+    unstable {
+      echo 'I am unstable :/'
+    }
+    failure {
+      echo 'I failed :('
+    }
+    changed {
+      echo 'Things were different before...'
+    }
+  }
 }
