@@ -46,43 +46,44 @@ let make =
       ~userFirstName,
       ~userId as _: string,
       ~recordingDownloadUrl,
+      ~onNopeClick,
       _children,
     ) => {
   ...component,
   render: _self =>
-    <div className=("card " ++ cardStyle)>
+    <div className={"card " ++ cardStyle}>
       <div className="card-content">
-        (
+        {
           switch (makeTitle(~emojiResume)) {
           | None => ReasonReact.null
           | Some(emojiResume) =>
-            <p className="title"> (emojiResume |> ReasonReact.string) </p>
+            <p className="title"> {emojiResume |> ReasonReact.string} </p>
           }
-        )
-        (
+        }
+        {
           switch (recordingDownloadUrl) {
           | None => ReasonReact.null
           | Some(downloadUrl) =>
             <div>
               <audio controls=true>
-                <source src=downloadUrl _type="audio/mpeg" />
+                <source src=downloadUrl datatype="audio/mpeg" />
               </audio>
             </div>
           }
-        )
+        }
         <p className="subtitle">
-          (
+          {
             makeSubtitle(~userFirstName, ~userCity, ~distance)
             |> ReasonReact.string
-          )
+          }
         </p>
       </div>
       <footer className="card-footer">
-        <a href="#" className="card-footer-item">
-          ("Nope" |> ReasonReact.string)
+        <a onClick=onNopeClick className="card-footer-item has-text-danger">
+          {"Nope" |> ReasonReact.string}
         </a>
-        <a href="#" className="card-footer-item">
-          ({j|Répondre|j} |> ReasonReact.string)
+        <a href="#" className="card-footer-item has-text-success">
+          {{j|Répondre|j} |> ReasonReact.string}
         </a>
       </footer>
     </div>,

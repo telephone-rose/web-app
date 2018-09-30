@@ -32,7 +32,7 @@ type discover = {
   randomUserFeed: array(user),
 };
 
-module Payload = [%graphql
+module DiscoverQueryPayload = [%graphql
   {|
     query Discover {
       me @bsRecord {
@@ -70,7 +70,22 @@ module Payload = [%graphql
   |}
 ];
 
-module Query = ReasonApollo.CreateQuery(Payload);
+module DiscoverQuery = ReasonApollo.CreateQuery(DiscoverQueryPayload);
+
+module HideUserMutationPayload = [%graphql
+  {|
+    mutation HideUser (
+      $userId: String!
+    ) {
+      hideUser (userId: $userId) {
+        id
+      }
+    }
+  |}
+];
+
+module HideUserMutation =
+  ReasonApollo.CreateMutation(HideUserMutationPayload);
 
 let component = ReasonReact.statelessComponent("DiscoverPage");
 
@@ -89,21 +104,27 @@ let cardWrapperStyle = Glamor.(css([position("absolute")]));
 let make = _children => {
   ...component,
   render: _self =>
-    <Query>
-      ...(
+    <DiscoverQuery>
+      ...{
            ({result}) =>
              switch (result) {
-             | Loading => <div> (ReasonReact.string("Loading")) </div>
+             | Loading => <div> {ReasonReact.string("Loading")} </div>
              | Error(error) =>
-               <div> (ReasonReact.string(error##message)) </div>
+               <div> {ReasonReact.string(error##message)} </div>
              | Data(response) =>
                <div className=pageStyle>
                  {
                    let me = response##me;
                    me.randomUserFeed
-                   |> Array.mapi((i, randomUser) =>
+                   |> Array.mapi((i, randomUser) => {
+                        let hideUser =
+                          HideUserMutationPayload.make(
+                            ~userId=randomUser.id,
+                            (),
+                          );
+
                         <div
-                          style=(
+                          style={
                             ReactDOMRe.Style.make(
                               ~zIndex=
                                 string_of_int(
@@ -119,38 +140,52 @@ let make = _children => {
                                 ++ "px)",
                               (),
                             )
-                          )
+                          }
                           className=cardWrapperStyle
-                          key=randomUser.id>
-                          <DiscoverCard
-                            emojiResume=(
-                              switch (randomUser.answeringMessageFile) {
-                              | None => None
-                              | Some(answeringMessageFile) =>
-                                answeringMessageFile.emojiResume
-                              }
-                            )
-                            recordingDownloadUrl=(
-                              switch (randomUser.answeringMessageFile) {
-                              | None => None
-                              | Some(answeringMessageFile) =>
-                                Some(
-                                  answeringMessageFile.compressedFile.
-                                    downloadUrl,
-                                )
-                              }
-                            )
-                            userCity=randomUser.city
-                            distance=randomUser.distance
-                            userId=randomUser.id
-                            userFirstName=randomUser.firstName
-                          />
-                        </div>
-                      )
+                          key={string_of_int(i)}>
+                          <HideUserMutation>
+                            ...(
+                                 (mutation, _) =>
+                                   <DiscoverCard
+                                     emojiResume={
+                                       switch (randomUser.answeringMessageFile) {
+                                       | None => None
+                                       | Some(answeringMessageFile) =>
+                                         answeringMessageFile.emojiResume
+                                       }
+                                     }
+                                     recordingDownloadUrl={
+                                       switch (randomUser.answeringMessageFile) {
+                                       | None => None
+                                       | Some(answeringMessageFile) =>
+                                         Some(
+                                           answeringMessageFile.compressedFile.
+                                             downloadUrl,
+                                         )
+                                       }
+                                     }
+                                     userCity={randomUser.city}
+                                     distance={randomUser.distance}
+                                     userId={randomUser.id}
+                                     userFirstName={randomUser.firstName}
+                                     onNopeClick={
+                                       _mouseEvent =>
+                                         mutation(
+                                           ~variables=hideUser##variables,
+                                           ~refetchQueries=[|"Discover"|],
+                                           (),
+                                         )
+                                         |> ignore
+                                     }
+                                   />
+                               )
+                          </HideUserMutation>
+                        </div>;
+                      })
                    |> ReasonReact.array;
                  }
                </div>
              }
-         )
-    </Query>,
+         }
+    </DiscoverQuery>,
 };

@@ -54,15 +54,15 @@ let make = (_children, ~onRecordReady) => {
   didMount: self =>
     if (OpusRecorder.isRecordingSupported()) {
       let recorder = OpusRecorder.make();
-      recorder |. OpusRecorder.onstart(() => self.send(RecordingStarted));
-      recorder |. OpusRecorder.onstop(() => self.send(RecordingStoped));
-      recorder |. OpusRecorder.ondataavailable(data => onRecordReady(data));
+      recorder->OpusRecorder.onstart(() => self.send(RecordingStarted));
+      recorder->OpusRecorder.onstop(() => self.send(RecordingStoped));
+      recorder->OpusRecorder.ondataavailable(data => onRecordReady(data));
       self.onUnmount(() => recorder |> OpusRecorder.clearStream);
       self.send(RecorderCreated(recorder));
     },
   render: self =>
     switch (self.state.recorder) {
-    | None => <div> (ReasonReact.string("Not supported")) </div>
+    | None => <div> {ReasonReact.string("Not supported")} </div>
     | Some(_) =>
       switch (self.state.recordingState) {
       | Loading =>
@@ -72,7 +72,7 @@ let make = (_children, ~onRecordReady) => {
           <span className="icon is-small">
             <i className="fas fa-microphone" />
           </span>
-          <span> (ReasonReact.string("Rec.")) </span>
+          <span> {ReasonReact.string("Rec.")} </span>
         </button>
       | Stoped =>
         <button
@@ -82,7 +82,7 @@ let make = (_children, ~onRecordReady) => {
           <span className="icon is-small">
             <i className="fas fa-microphone" />
           </span>
-          <span> (ReasonReact.string("Rec.")) </span>
+          <span> {ReasonReact.string("Rec.")} </span>
         </button>
       | Recording =>
         <button
@@ -92,7 +92,7 @@ let make = (_children, ~onRecordReady) => {
           <span className="icon is-small has-text-danger">
             <i className="fas fa-microphone" />
           </span>
-          <span> (ReasonReact.string("Rec.")) </span>
+          <span> {ReasonReact.string("Rec.")} </span>
         </button>
       }
     },

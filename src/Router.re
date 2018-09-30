@@ -45,13 +45,13 @@ let make = (~isAuthenticated, ~onLogin, _children) => {
     | (false, _) => <LoginPage onLogin />
     | _ =>
       <NavigationLayout>
-        ...(
+        ...{
              switch (self.state.page) {
              | NotFound => <NotFoundPage />
              | Home => <HomePage />
              | Discover => <DiscoverPage />
              }
-           )
+           }
       </NavigationLayout>
     },
 };
